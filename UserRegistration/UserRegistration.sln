@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D41C2B34-6417-427E-B843-8C93799EAFB6}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
+		global.json = global.json
+		..\.gitignore = ..\.gitignore
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserRegistration.Hosting", "UserRegistration.Hosting\UserRegistration.Hosting.csproj", "{073C2C60-3B94-4F5B-ADAC-7478F778E55E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserRegistration.UserManagement", "UserRegistration.UserManagement\UserRegistration.UserManagement.csproj", "{C67D3DC5-3030-4957-82BA-178EF68F7C24}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{073C2C60-3B94-4F5B-ADAC-7478F778E55E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{073C2C60-3B94-4F5B-ADAC-7478F778E55E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{073C2C60-3B94-4F5B-ADAC-7478F778E55E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{073C2C60-3B94-4F5B-ADAC-7478F778E55E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C67D3DC5-3030-4957-82BA-178EF68F7C24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C67D3DC5-3030-4957-82BA-178EF68F7C24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C67D3DC5-3030-4957-82BA-178EF68F7C24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C67D3DC5-3030-4957-82BA-178EF68F7C24}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
