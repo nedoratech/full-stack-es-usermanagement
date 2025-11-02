@@ -12,7 +12,7 @@ namespace UserRegistration.Hosting.Extensions;
 
 internal static class ServiceCollectionExtensions
 {
-    internal static IServiceCollection AddApiVersioning(this IServiceCollection services)
+    internal static IServiceCollection AddUrlApiVersioning(this IServiceCollection services)
     {
         services.AddApiVersioning(options =>
         {

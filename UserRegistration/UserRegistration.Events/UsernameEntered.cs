@@ -1,11 +1,9 @@
-using UR.Events.Abstractions;
-
 namespace UR.Events;
 
-public record UsernameEntered : IEvent
+public sealed class UsernameEntered
 {
-    public Guid AggregateId { get; init; }
-    public string Name { get; init; } = string.Empty;
-    public DateTime OccurredAt { get; init; }
+    public Guid AggregateId { get; set; }
+    public string Username { get; set; } = string.Empty;
+    public DateTime OccurredAt { get; set; }
 }
 

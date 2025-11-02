@@ -1,7 +1,11 @@
 using Asp.Versioning;
+using Common.Contracts.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using UserRegistration.WebApi.Contracts.Request;
+using UserRegistration.WebApi.Contracts.Response;
 
 namespace UserRegistration.UserManagement.ManageUser.Extensions;
 
@@ -11,14 +15,19 @@ public static class ManageUserApi
 
     public static IEndpointRouteBuilder MapManageUserApi(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/v{version:apiVersion}/user", GetUserAsync)
+        app.MapPost("/v{version:apiVersion}/usermanagement/user", CrateUser)
             .MapToApiVersion(V1)
-            .WithName("GetUser");
+            .WithName("CrateUser");
         
         return app;
     }
-
-    private static async Task<IResult> GetUserAsync()
+    
+    [EndpointSummary("Creates a new user")]
+    [EndpointDescription("Creates a new user")]
+    [ProducesResponseType(typeof(Response<CreateUserResponse>), StatusCodes.Status200OK, "application/json")]
+    [ProducesResponseType(typeof(Response), StatusCodes.Status404NotFound, "application/json")]
+    [ProducesResponseType(typeof(Response), StatusCodes.Status500InternalServerError, "application/json")]
+    private static async Task<IResult> CrateUser([FromBody]CreateUserRequest request)
     {
         return Results.Ok(new
         {

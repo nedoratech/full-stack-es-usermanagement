@@ -1,9 +1,8 @@
 namespace UR.Events;
 
-public sealed class AddressEntered
+public sealed class PasswordEntered
 {
     public Guid AggregateId { get; set; }
-    public string Address { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
     public DateTime OccurredAt { get; set; }
 }
-

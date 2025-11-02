@@ -1,11 +1,9 @@
-using UR.Events.Abstractions;
-
 namespace UR.Events;
 
-public record PhoneEntered : IEvent
+public sealed class PhoneEntered
 {
-    public Guid AggregateId { get; init; }
-    public string Phone { get; init; } = string.Empty;
-    public DateTime OccurredAt { get; init; }
+    public Guid AggregateId { get; set; }
+    public string Phone { get; set; } = string.Empty;
+    public DateTime OccurredAt { get; set; }
 }
 

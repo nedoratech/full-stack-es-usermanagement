@@ -6,7 +6,7 @@ using UserRegistration.UserManagement.ManageUser.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddApiVersioning()
+    .AddUrlApiVersioning()
     .AddSwaggerGen();
 
 var app = builder.Build();

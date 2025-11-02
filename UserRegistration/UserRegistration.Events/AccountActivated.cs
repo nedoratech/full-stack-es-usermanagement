@@ -1,10 +1,8 @@
-using UR.Events.Abstractions;
-
 namespace UR.Events;
 
-public record AccountActivated : IEvent
+public sealed class AccountActivated
 {
-    public Guid AggregateId { get; init; }
-    public DateTime OccurredAt { get; init; }
+    public Guid AggregateId { get; set; }
+    public DateTime OccurredAt { get; set; }
 }
 
