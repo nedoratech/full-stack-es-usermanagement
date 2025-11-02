@@ -420,9 +420,6 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-# Rider / IntelliJ IDEA
-.idea/*
-!.idea/*.iml
-!.idea/*.iml
-!.idea/codeStyles/
-!.idea/inspectionProfiles/
+# Rider / IntelliJ IDEA - ignore all .idea directories recursively
+.idea/
+**/.idea/
