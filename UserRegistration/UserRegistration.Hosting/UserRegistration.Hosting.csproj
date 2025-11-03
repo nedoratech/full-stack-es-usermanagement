@@ -10,6 +10,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\UserRegistration.Storage\UserRegistration.Storage.csproj" />
     <ProjectReference Include="..\UserRegistration.UserManagement\UserRegistration.UserManagement.csproj" />
   </ItemGroup>
 </Project>

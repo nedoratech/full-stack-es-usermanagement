@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using UserRegistration.UserManagement;
+using UserRegistration.UserManagement.Abstractions;
 
 namespace UserRegistration.Testing.Common.Fakes;
 
@@ -16,7 +16,19 @@ internal sealed class FakeEventStreamStorage : IEventStreamStorage
 
         return Task.FromResult<IReadOnlyList<object>>(Array.Empty<object>());
     }
-    
+
+    public Task AppendEventsAsync(Guid aggregateId, IEnumerable<object> events, CancellationToken cancellationToken)
+    {
+        var stream = _eventStreams.GetOrAdd(aggregateId, _ => new List<object>());
+        stream.AddRange(events);
+        return Task.CompletedTask;
+    }
+
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.CompletedTask;
+    }
+
     public void AppendEvents(Guid aggregateId, params object[] events)
     {
         var stream = _eventStreams.GetOrAdd(aggregateId, _ => new List<object>());

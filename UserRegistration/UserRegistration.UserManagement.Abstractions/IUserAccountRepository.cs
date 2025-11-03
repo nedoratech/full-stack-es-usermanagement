@@ -1,6 +1,6 @@
-namespace UserRegistration.UserManagement;
+namespace UserRegistration.UserManagement.Abstractions;
 
-internal interface IUserAccountRepository
+public interface IUserAccountRepository
 {
     Task<IUserAccount> CreateOrLoadAsync(Guid aggregateId, CancellationToken cancellationToken = default);
     Task SaveChangesAsync(CancellationToken cancellationToken = default);

@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Common.Contracts\Common.Contracts.csproj" />
+      <ProjectReference Include="..\UserRegistration.UserManagement.Abstractions\UserRegistration.UserManagement.Abstractions.csproj" />
       <ProjectReference Include="..\UserRegistration.WebApi.Contracts\UserRegistration.WebApi.Contracts.csproj" />
       <ProjectReference Include="..\UserRegistration.Events\UserRegistration.Events.csproj" />
     </ItemGroup>

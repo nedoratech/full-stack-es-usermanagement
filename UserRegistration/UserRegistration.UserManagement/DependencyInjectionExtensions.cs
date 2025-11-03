@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using UserRegistration.UserManagement.Abstractions;
 
 namespace UserRegistration.UserManagement;
 

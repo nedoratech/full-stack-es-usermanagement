@@ -1,9 +1,12 @@
 using UR.Events;
+using UserRegistration.UserManagement.Abstractions;
 
 namespace UserRegistration.UserManagement;
 
 internal sealed class UserAccount : IUserAccount
 {
+    private List<object> _pendingEvents = new();
+    
     private Guid _id;
     private string _username = string.Empty;
     private string _email = string.Empty;
@@ -13,8 +16,10 @@ internal sealed class UserAccount : IUserAccount
     private bool _isEmailVerified;
     private bool _isActivated;
     private int _version;
-    
-    public UserAccount FromEvents(IEnumerable<object> events)
+
+    public Guid Id => _id;
+
+    public IUserAccount FromEvents(IEnumerable<object> events)
     {
         var user = new UserAccount();
         foreach (var @event in events)
@@ -27,6 +32,11 @@ internal sealed class UserAccount : IUserAccount
     public void Append(object @event)
     {
         Apply(@event);
+    }
+
+    public Guid GetId()
+    {
+        return _id;
     }
     
     private void Apply(object @event)
@@ -62,12 +72,15 @@ internal sealed class UserAccount : IUserAccount
                 break;
         }
         _version++;
+        _pendingEvents.Add(@event);
     }
 
     private void Apply(UserRegistered @event)
     {
         if (_id != Guid.Empty)
+        {
             throw new InvalidOperationException("User has already been registered.");
+        }
 
         _id = @event.AggregateId;
         _username = @event.Name;
@@ -86,7 +99,6 @@ internal sealed class UserAccount : IUserAccount
     {
         EnsureUserExists();
         _email = @event.Email;
-        // When email changes, verification status should be reset
         _isEmailVerified = false;
     }
 
@@ -119,8 +131,10 @@ internal sealed class UserAccount : IUserAccount
         EnsureUserExists();
         
         if (!_isEmailVerified)
+        {
             throw new InvalidOperationException("Cannot activate account before email is verified.");
-
+        }
+        
         _isActivated = true;
     }
 
@@ -129,25 +143,35 @@ internal sealed class UserAccount : IUserAccount
         EnsureUserExists();
         
         if (!string.IsNullOrWhiteSpace(@event.Name))
-            _username = @event.Name;
-        if (!string.IsNullOrWhiteSpace(@event.Email))
         {
-            // Email change resets verification
+            _username = @event.Name;
+        }       
+        
+        if (!string.IsNullOrWhiteSpace(@event.Email))
+        { 
             var emailChanged = _email != @event.Email;
             _email = @event.Email;
             if (emailChanged)
                 _isEmailVerified = false;
         }
+        
         if (!string.IsNullOrWhiteSpace(@event.Phone))
+        {
             _phone = @event.Phone;
+        }        
+        
         if (!string.IsNullOrWhiteSpace(@event.Address))
+        {
             _address = @event.Address;
+        } 
     }
 
     private void EnsureUserExists()
     {
         if (_id == Guid.Empty)
+        {
             throw new InvalidOperationException("User has not been registered yet.");
+        }    
     }
     
     private bool CanActivate()
@@ -158,5 +182,13 @@ internal sealed class UserAccount : IUserAccount
     private bool CanVerifyEmail()
     {
         return !string.IsNullOrWhiteSpace(_email) && !_isEmailVerified;
+    }
+    
+    private IReadOnlyList<object> PendingEvents {
+        get {
+            var pendingEvents = _pendingEvents.ToList();
+            _pendingEvents = [];
+            return pendingEvents;
+        }
     }
 }
