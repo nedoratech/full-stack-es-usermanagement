@@ -7,4 +7,8 @@
         <RootNamespace>UR.Events</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\UserRegistration.UserManagement.Abstractions\UserRegistration.UserManagement.Abstractions.csproj" />
+    </ItemGroup>
+
 </Project>

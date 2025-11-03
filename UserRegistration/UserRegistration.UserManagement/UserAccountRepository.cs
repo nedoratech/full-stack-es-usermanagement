@@ -24,17 +24,14 @@ internal sealed class UserAccountRepository(
             throw new InvalidOperationException("Could not find PendingEvents property on UserAccount.");
         }
 
-        var pendingEvents = (IReadOnlyList<object>?)pendingEventsProperty.GetValue(userAccount);
+        var pendingEvents = (IReadOnlyList<IEvent>?)pendingEventsProperty.GetValue(userAccount);
         
         if (pendingEvents == null || pendingEvents.Count == 0)
         {
             return;
-        }        
+        }
         
-        // Append events to the transaction (but don't commit yet)
         await eventStreamStorage.AppendEventsAsync(userAccount.Id, pendingEvents, cancellationToken);
-        
-        // Commit the transaction
         await eventStreamStorage.SaveChangesAsync(cancellationToken);
     }
 }

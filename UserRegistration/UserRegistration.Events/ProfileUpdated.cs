@@ -1,6 +1,8 @@
+using UserRegistration.UserManagement.Abstractions;
+
 namespace UR.Events;
 
-public sealed class ProfileUpdated
+public sealed class ProfileUpdated : IEvent
 {
     public Guid AggregateId { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -8,5 +10,6 @@ public sealed class ProfileUpdated
     public string Phone { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public DateTime OccurredAt { get; set; }
+    public int Version { get; set; }
 }
 

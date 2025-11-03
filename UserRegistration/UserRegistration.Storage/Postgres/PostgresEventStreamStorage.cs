@@ -13,9 +13,9 @@ internal sealed class PostgresEventStreamStorage(EventStoreDbContext context) : 
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
     
-    private IDbContextTransaction? _currentTransaction;
+    private IDbContextTransaction? _transaction;
 
-    public async Task<IReadOnlyList<object>> FindByAggregateIdAsync(
+    public async Task<IReadOnlyList<IEvent>> FindByAggregateIdAsync(
         Guid aggregateId, 
         CancellationToken cancellationToken)
     {
@@ -29,38 +29,27 @@ internal sealed class PostgresEventStreamStorage(EventStoreDbContext context) : 
 
     public async Task AppendEventsAsync(
         Guid aggregateId, 
-        IEnumerable<object> events, 
+        IEnumerable<IEvent> events, 
         CancellationToken cancellationToken)
     {
         var eventList = events.ToList();
         if (eventList.Count == 0)
             return;
 
-        if (_currentTransaction == null)
+        if (_transaction == null)
         {
-            _currentTransaction = await context.Database.BeginTransactionAsync(cancellationToken);
+            _transaction = await context.Database.BeginTransactionAsync(cancellationToken);
         }
-        
-        var maxVersion = await context.Events
-            .Where(e => e.AggregateId == aggregateId)
-            .Select(e => (int?)e.Version)
-            .MaxAsync(cancellationToken) ?? 0;
 
-        var entities = new List<EventStoreEntity>();
-        var version = maxVersion;
-
-        foreach (var @event in eventList)
-        {
-            version++;
-            entities.Add(new EventStoreEntity
+        var entities = eventList.Select(@event => new EventStoreEntity
             {
-                AggregateId = aggregateId,
+                AggregateId = @event.AggregateId,
                 Type = @event.GetType().FullName!,
                 Body = JsonSerializer.Serialize(@event, _jsonOptions),
-                Version = version,
-                OccurredAt = GetOccurredAt(@event) ?? DateTime.UtcNow
-            });
-        }
+                Version = @event.Version,
+                OccurredAt = @event.OccurredAt
+            })
+            .ToList();
 
         context.Events.AddRange(entities);
     }
@@ -69,15 +58,15 @@ internal sealed class PostgresEventStreamStorage(EventStoreDbContext context) : 
     {
         await context.SaveChangesAsync(cancellationToken);
         
-        if (_currentTransaction != null)
+        if (_transaction != null)
         {
-            await _currentTransaction.CommitAsync(cancellationToken);
-            await _currentTransaction.DisposeAsync();
-            _currentTransaction = null;
+            await _transaction.CommitAsync(cancellationToken);
+            await _transaction.DisposeAsync();
+            _transaction = null;
         }
     }
 
-    private object DeserializeEvent(EventStoreEntity entity)
+    private IEvent DeserializeEvent(EventStoreEntity entity)
     {
         var eventType = Type.GetType(entity.Type);
         if (eventType == null)
@@ -93,16 +82,16 @@ internal sealed class PostgresEventStreamStorage(EventStoreDbContext context) : 
                 $"Could not deserialize event data for type '{entity.Type}'.");
         }
 
-        return deserialized;
-    }
-
-    private static DateTime? GetOccurredAt(object @event)
-    {
-        var property = @event.GetType().GetProperty("OccurredAt");
-        if (property?.PropertyType == typeof(DateTime))
+        if (deserialized is not IEvent @event)
         {
-            return (DateTime?)property.GetValue(@event);
+            throw new InvalidOperationException(
+                $"Deserialized object of type '{entity.Type}' does not implement IEvent.");
         }
-        return null;
+
+        @event.Version = entity.Version;
+        @event.OccurredAt = entity.OccurredAt;
+        @event.AggregateId = entity.AggregateId;
+
+        return @event;
     }
 }

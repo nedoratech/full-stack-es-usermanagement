@@ -5,7 +5,7 @@ namespace UserRegistration.UserManagement;
 
 internal sealed class UserAccount : IUserAccount
 {
-    private List<object> _pendingEvents = new();
+    private List<IEvent> _pendingEvents = new();
     
     private Guid _id;
     private string _username = string.Empty;
@@ -19,7 +19,7 @@ internal sealed class UserAccount : IUserAccount
 
     public Guid Id => _id;
 
-    public IUserAccount FromEvents(IEnumerable<object> events)
+    public IUserAccount FromEvents(IEnumerable<IEvent> events)
     {
         var user = new UserAccount();
         foreach (var @event in events)
@@ -29,7 +29,7 @@ internal sealed class UserAccount : IUserAccount
         return user;
     }
 
-    public void Append(object @event)
+    public void Append(IEvent @event)
     {
         Apply(@event);
     }
@@ -39,7 +39,7 @@ internal sealed class UserAccount : IUserAccount
         return _id;
     }
     
-    private void Apply(object @event)
+    private void Apply(IEvent @event)
     {
         switch (@event)
         {
@@ -184,7 +184,7 @@ internal sealed class UserAccount : IUserAccount
         return !string.IsNullOrWhiteSpace(_email) && !_isEmailVerified;
     }
     
-    private IReadOnlyList<object> PendingEvents {
+    private IReadOnlyList<IEvent> PendingEvents {
         get {
             var pendingEvents = _pendingEvents.ToList();
             _pendingEvents = [];
