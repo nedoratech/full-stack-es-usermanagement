@@ -34,8 +34,10 @@ internal sealed class PostgresEventStreamStorage(EventStoreDbContext context) : 
     {
         var eventList = events.ToList();
         if (eventList.Count == 0)
+        {            
             return;
-
+        }
+        
         if (_transaction == null)
         {
             _transaction = await context.Database.BeginTransactionAsync(cancellationToken);
@@ -87,10 +89,6 @@ internal sealed class PostgresEventStreamStorage(EventStoreDbContext context) : 
             throw new InvalidOperationException(
                 $"Deserialized object of type '{entity.Type}' does not implement IEvent.");
         }
-
-        @event.Version = entity.Version;
-        @event.OccurredAt = entity.OccurredAt;
-        @event.AggregateId = entity.AggregateId;
 
         return @event;
     }

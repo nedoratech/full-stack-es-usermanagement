@@ -6,7 +6,7 @@ namespace UserRegistration.Storage.Postgres;
 
 internal sealed class EventStoreDbContext(
     DbContextOptions<EventStoreDbContext> options, 
-    StorageConfigurationSettings settings) : DbContext(options)
+    PostgresStorageConfigurationSettings settings) : DbContext(options)
 {
     public DbSet<EventStoreEntity> Events { get; set; }
 
@@ -15,8 +15,18 @@ internal sealed class EventStoreDbContext(
         options.UseNpgsql(settings.ConnectionString, npgsql =>
         {
             npgsql.MigrationsAssembly(typeof(EventStoreDbContext).Assembly.GetName().Name);
-            npgsql.MigrationsHistoryTable("__EFMigrationsHistory", "public");
+            npgsql.MigrationsHistoryTable(settings.MigrationsTableName, settings.MigrationsSchemaName);
+            
+            if (settings.CommandTimeout.HasValue)
+            {
+                npgsql.CommandTimeout(settings.CommandTimeout.Value);
+            }
         });
+        
+        if (settings.EnableSensitiveDataLogging)
+        {
+            options.EnableSensitiveDataLogging();
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

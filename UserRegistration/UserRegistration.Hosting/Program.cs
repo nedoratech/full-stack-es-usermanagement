@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddUrlApiVersioning()
     .AddSwaggerGen()
+    .AddStorageConfigurationSettings(builder.Configuration)
     .AddPostgresEventStreamStorage();
 
 var app = builder.Build();

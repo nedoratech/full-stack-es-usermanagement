@@ -11,7 +11,7 @@ public sealed class CreateUserTests(TestingWebApplicationFactory factory, ITestO
     : WebApiTestFixture(factory, output)
 {
     [Fact]
-    public async Task CreateUserTest()
+    public async Task GivenValidUserCreationEventStream_WhenCreatingUser_ThenExpectAggregate()
     {
         var response = await UserManagementClient.CrateUser(CreateUserRequestBuilder.ValidEventStream());
 
