@@ -1,4 +1,7 @@
 using UserRegistration.Hosting.Extensions;
+using UserRegistration.Testing.Common.Fakes;
+using UserRegistration.UserManagement;
+using UserRegistration.UserManagement.Abstractions;
 using UserRegistration.UserManagement.ManageUser.Extensions;
 
 namespace UserRegistration.Testing.Common;
@@ -10,7 +13,9 @@ public sealed class TestStartup
 
         builder.Services
             .AddUrlApiVersioning()
-            .AddSwaggerGen();
+            .AddSwaggerGen()
+            .AddUserAccount()
+            .AddSingleton<IEventStreamStorage, FakeEventStreamStorage>();
 
         var app = builder.Build();
 

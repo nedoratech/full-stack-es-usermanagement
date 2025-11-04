@@ -13,7 +13,9 @@ public sealed class CreateUserTests(TestingWebApplicationFactory factory, ITestO
     [Fact]
     public async Task GivenValidUserCreationEventStream_WhenCreatingUser_ThenExpectAggregate()
     {
-        var response = await UserManagementClient.CrateUser(CreateUserRequestBuilder.ValidEventStream());
+        var request = CreateUserRequestBuilder.ValidEventStream();
+        
+        var response = await UserManagementClient.CrateUser(request);
 
         response.Success.Should().BeTrue();
     }

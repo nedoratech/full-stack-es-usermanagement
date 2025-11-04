@@ -10,24 +10,10 @@ public sealed class ResponseErrorContext
         Context = context;
     }
 
-    [JsonPropertyName("error")]
+    [JsonPropertyName("context")]
     public IReadOnlyList<ErrorContext>? Context { get; }
 
-    public static ResponseErrorContext Empty() => new(null);
-
-    public static ResponseErrorContext ValidatorError(params ErrorContext[] errors) => WithContext(errors);
-    
-    public static ResponseErrorContext NotFoundError(params ErrorContext[] errors) => WithContext(errors);
-    
-    public static ResponseErrorContext BusinessRuleError(params ErrorContext[] errors) => WithContext(errors);
-    
-    public static ResponseErrorContext SystemError(params ErrorContext[] errors) => WithContext(errors);
-    
-    public static ResponseErrorContext UnauthorizedError(params ErrorContext[] errors) => WithContext(errors);
-    
-    public static ResponseErrorContext ConflictError(params ErrorContext[] errors) => WithContext(errors);
-
-    public static ResponseErrorContext WithContext(params ErrorContext[] errors)
+    protected internal static ResponseErrorContext WithContext(params ErrorContext[] errors)
     {
         if (errors == null || errors.Length == 0)
         {
@@ -37,7 +23,7 @@ public sealed class ResponseErrorContext
         return new ResponseErrorContext(errors);
     }
 
-    public static ResponseErrorContext WithContext(IEnumerable<ErrorContext> errors)
+    protected internal static ResponseErrorContext WithContext(IEnumerable<ErrorContext> errors)
     {
         if (errors == null)
         {

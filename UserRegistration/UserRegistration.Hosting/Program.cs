@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Builder;
 using UserRegistration.Hosting.Extensions;
 using UserRegistration.Storage;
+using UserRegistration.UserManagement;
 using UserRegistration.UserManagement.ManageUser.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddUrlApiVersioning()
     .AddSwaggerGen()
+    .AddUserAccount()
     .AddStorageConfigurationSettings(builder.Configuration)
     .AddPostgresEventStreamStorage();
 

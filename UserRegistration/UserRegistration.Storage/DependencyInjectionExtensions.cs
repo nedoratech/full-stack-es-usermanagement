@@ -21,7 +21,7 @@ public static class DependencyInjectionExtensions
             .ValidateDataAnnotations()
             .ValidateOnStart();
         
-        services.AddSingleton(sp => sp.GetRequiredService<IOptions<PostgresEventStreamStorage>>().Value);
+        services.AddSingleton(sp => sp.GetRequiredService<IOptions<PostgresStorageConfigurationSettings>>().Value);
         return services;
     }
     

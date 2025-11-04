@@ -6,9 +6,7 @@ namespace UserRegistration.UserManagement;
 internal sealed class UserAccount : IUserAccount
 {
     private List<IEvent> _pendingEvents = new();
-    
-    private Guid _id;
-    private string _username = string.Empty;
+
     private string _email = string.Empty;
     private string _phone = string.Empty;
     private string _address = string.Empty;
@@ -17,7 +15,9 @@ internal sealed class UserAccount : IUserAccount
     private bool _isActivated;
     private int _version;
 
-    public Guid Id => _id;
+    public Guid Id { get; private set; }
+
+    public string Username { get; private set; } = string.Empty;
 
     public IUserAccount FromEvents(IEnumerable<IEvent> events)
     {
@@ -33,16 +33,14 @@ internal sealed class UserAccount : IUserAccount
     {
         Apply(@event);
     }
-
-    public Guid GetId()
-    {
-        return _id;
-    }
     
     private void Apply(IEvent @event)
     {
         switch (@event)
         {
+            case UserRegistrationRequested userRegistrationRequested:
+                Apply(userRegistrationRequested);
+                break;
             case UserRegistered userRegistered:
                 Apply(userRegistered);
                 break;
@@ -75,15 +73,25 @@ internal sealed class UserAccount : IUserAccount
         _pendingEvents.Add(@event);
     }
 
+    private void Apply(UserRegistrationRequested @event)
+    {
+        if (@event.UserId == Guid.Empty)
+        {
+            throw new InvalidOperationException("Invalid user id");
+        }
+        
+        Id = @event.UserId;
+    }
+
     private void Apply(UserRegistered @event)
     {
-        if (_id != Guid.Empty)
+        if (Id != Guid.Empty)
         {
             throw new InvalidOperationException("User has already been registered.");
         }
 
-        _id = @event.AggregateId;
-        _username = @event.Name;
+        Id = @event.AggregateId;
+        Username = @event.Name;
         _email = @event.Email;
         _phone = @event.Phone;
         _address = @event.Address;
@@ -92,7 +100,7 @@ internal sealed class UserAccount : IUserAccount
     private void Apply(UsernameEntered @event)
     {
         EnsureUserExists();
-        _username = @event.Username;
+        Username = @event.Username;
     }
 
     private void Apply(EmailEntered @event)
@@ -144,7 +152,7 @@ internal sealed class UserAccount : IUserAccount
         
         if (!string.IsNullOrWhiteSpace(@event.Name))
         {
-            _username = @event.Name;
+            Username = @event.Name;
         }       
         
         if (!string.IsNullOrWhiteSpace(@event.Email))
@@ -168,7 +176,7 @@ internal sealed class UserAccount : IUserAccount
 
     private void EnsureUserExists()
     {
-        if (_id == Guid.Empty)
+        if (Id == Guid.Empty)
         {
             throw new InvalidOperationException("User has not been registered yet.");
         }    

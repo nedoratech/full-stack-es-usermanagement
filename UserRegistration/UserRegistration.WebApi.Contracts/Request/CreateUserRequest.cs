@@ -6,5 +6,5 @@ namespace UserRegistration.WebApi.Contracts.Request;
 public sealed class CreateUserRequest
 {
     public Guid UserId { get; set; }
-    public IReadOnlyList<CloudEvent<IEvent>> Events { get; set; } =  new List<CloudEvent<IEvent>>();
+    public IReadOnlyList<CloudEvent<object>> Events { get; set; } =  new List<CloudEvent<object>>();
 }

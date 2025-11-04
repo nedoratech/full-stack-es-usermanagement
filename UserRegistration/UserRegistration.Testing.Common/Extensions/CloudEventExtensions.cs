@@ -6,7 +6,7 @@ namespace UserRegistration.Testing.Common.Extensions;
 
 internal static class CloudEventExtensions
 {
-    internal static CloudEvent<IEvent> ToCloudEvent<T>(this T @event) where T : IEvent
+    internal static CloudEvent<object> ToCloudEvent<T>(this T @event) where T : IEvent
     {
         if (@event == null)
             throw new ArgumentNullException(nameof(@event));
@@ -15,7 +15,7 @@ internal static class CloudEventExtensions
         var aggregateId = GetAggregateId(@event);
         var occurredAt = GetOccurredAt(@event);
 
-        return new CloudEvent<IEvent>
+        return new CloudEvent<object>
         {
             Type = eventType.Name,
             Source = "user-registration",

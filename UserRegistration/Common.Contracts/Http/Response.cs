@@ -14,18 +14,18 @@ public class Response
     public bool Success => Error is null;
 
     [JsonPropertyName("error")] 
-    protected ResponseErrorContext? Error { get; }
+    protected ResponseErrorContext? Error { get; private set; }
 
     public static Response ForSuccess() => new();
 
-    public static Response WithError(ResponseErrorContext error)
+    public static Response WithError(ErrorContext error)
     {
         if (error == null)
         {
             throw new ArgumentNullException(nameof(error));
         }
 
-        return new Response(error);
+        return new Response(ResponseErrorContext.WithContext(error));
     }
 
     public static Response WithError(params ErrorContext[] errors)
